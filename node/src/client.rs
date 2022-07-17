@@ -85,7 +85,7 @@ struct Client {
 
 impl Client {
     pub async fn send(&self) -> Result<()> {
-        const PRECISION: u64 = 20; // Sample precision.
+        const PRECISION: u64 = 1; // Sample precision.
         const BURST_DURATION: u64 = 1000 / PRECISION;
 
         // The transaction size must be at least 16 bytes to ensure all txs are different.
@@ -117,18 +117,12 @@ impl Client {
             let now = Instant::now();
 
             for x in 0..burst {
-                let bytes = if x == counter % burst {
+                let bytes = {
                     // NOTE: This log entry is used to compute performance.
                     info!("Sending sample transaction {}", counter);
-
+                    r += 1;
                     tx.put_u8(0u8); // Sample txs start with 0.
                     tx.put_u64(counter); // This counter identifies the tx.
-                    tx.resize(self.size, 0u8);
-                    tx.split().freeze()
-                } else {
-                    r += 1;
-
-                    tx.put_u8(1u8); // Standard txs start with 1.
                     tx.put_u64(r); // Ensures all clients send different txs.
                     tx.resize(self.size, 0u8);
                     tx.split().freeze()
@@ -138,12 +132,13 @@ impl Client {
                     warn!("Failed to send transaction: {}", e);
                     break 'main;
                 }
+                counter += 1;
             }
             if now.elapsed().as_millis() > BURST_DURATION as u128 {
                 // NOTE: This log entry is used to compute performance.
                 warn!("Transaction rate too high for this client");
             }
-            counter += 1;
+
         }
         Ok(())
     }
