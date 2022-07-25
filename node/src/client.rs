@@ -38,7 +38,7 @@ async fn main() -> Result<()> {
     let id = matches
         .value_of("id")
         .unwrap()
-        .parse::<usize>()
+        .parse::<u64>()
         .context("id")?;
     let size = matches
         .value_of("size")
@@ -119,7 +119,7 @@ impl Client {
 
         // NOTE: This log entry is used to compute performance.
         info!("Start sending transactions");
-        sleep(Duration::from_millis(225*id)).await;
+        sleep(Duration::from_millis(225*self.id)).await;
         'main: loop {
             interval.as_mut().tick().await;
             let now = Instant::now();
