@@ -18,6 +18,7 @@ async fn main() -> Result<()> {
         .version(crate_version!())
         .about("Benchmark client for HotStuff nodes.")
         .args_from_usage("<ADDR> 'The network address of the node where to send txs'")
+        .args_from_usage("--id=<INT> 'The id of client'")
         .args_from_usage("--timeout=<INT> 'The nodes timeout value'")
         .args_from_usage("--size=<INT> 'The size of each transaction in bytes'")
         .args_from_usage("--rate=<INT> 'The rate (txs/s) at which to send the transactions'")
@@ -34,6 +35,11 @@ async fn main() -> Result<()> {
         .unwrap()
         .parse::<SocketAddr>()
         .context("Invalid socket address format")?;
+    let id = matches
+        .value_of("id")
+        .unwrap()
+        .parse::<usize>()
+        .context("id")?;
     let size = matches
         .value_of("size")
         .unwrap()
@@ -62,6 +68,7 @@ async fn main() -> Result<()> {
     info!("Transactions rate: {} tx/s", rate);
     let client = Client {
         target,
+        id,
         size,
         rate,
         timeout,
@@ -77,6 +84,7 @@ async fn main() -> Result<()> {
 
 struct Client {
     target: SocketAddr,
+    id: u64,
     size: usize,
     rate: u64,
     timeout: u64,
@@ -111,7 +119,7 @@ impl Client {
 
         // NOTE: This log entry is used to compute performance.
         info!("Start sending transactions");
-
+        sleep(Duration::from_millis(225*id)).await;
         'main: loop {
             interval.as_mut().tick().await;
             let now = Instant::now();
