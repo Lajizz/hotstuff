@@ -317,7 +317,7 @@ impl Core {
         self.process_block(&block).await?;
 
         // Wait for the minimum block delay.
-        sleep(Duration::from_millis(self.parameters.min_block_delay)).await;
+        // sleep(Duration::from_millis(self.parameters.min_block_delay)).await;
         Ok(())
     }
 

@@ -41,13 +41,14 @@ impl Runner {
     }
 
     async fn add(&mut self, tx: Transaction) -> Option<Payload> {
-        let length = tx.len();
-        let ret = match self.size + length > self.max_size {
-            true => Some(self.make().await),
-            false => None,
-        };
+        // let length = tx.len();
+        // let ret = match self.size + length >= self.max_size {
+        //     true => Some(self.make().await),
+        //     false => None,
+        // };
         self.transactions.push(tx);
-        self.size += length;
+        self.make().await;
+        // self.size += length;
         ret
     }
 
@@ -72,7 +73,7 @@ impl Runner {
                         }
 
                         // Wait for the minimum block delay.
-                        sleep(Duration::from_millis(self.min_block_delay)).await;
+                        // sleep(Duration::from_millis(self.min_block_delay)).await;
                     }
                 },
                 Some(sender) = self.request_channel.recv() => {
