@@ -302,7 +302,7 @@ impl Core {
                 info!("Created B{}({})", block.round, base64::encode(x));
             }
         }
-        debug!("Created {:?}", block);
+        info!("Created {:?}", block);
 
         // Process our new block and broadcast it.
         let message = ConsensusMessage::Propose(block.clone());
@@ -314,8 +314,10 @@ impl Core {
             &self.committee,
         )
         .await?;
-        self.process_block(&block).await?;
 
+        info!("consensus/core.rs#line318: begin to process block");
+        self.process_block(&block).await?;
+        info!("consensus/core.rs#line320: end to process block");
         // Wait for the minimum block delay.
         // sleep(Duration::from_millis(self.parameters.min_block_delay)).await;
         Ok(())

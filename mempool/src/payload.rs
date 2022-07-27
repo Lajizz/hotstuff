@@ -67,6 +67,7 @@ impl Runner {
             tokio::select! {
                 Some(transaction) = self.client_channel.recv() => {
                     if let Some(payload) = self.add(transaction).await {
+                        info!("payload.rs:line 70");
                         let message = MempoolMessage::OwnPayload(payload);
                         if let Err(e) = self.core_channel.send(message).await {
                             panic!("Failed to send payload to the core: {}", e);
