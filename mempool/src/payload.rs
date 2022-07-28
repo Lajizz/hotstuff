@@ -47,7 +47,7 @@ impl Runner {
         //     false => None,
         // };
         self.transactions.push(tx);
-        self.make().await;
+        let ret = Some(self.make().await);
         // self.size += length;
         ret
     }
