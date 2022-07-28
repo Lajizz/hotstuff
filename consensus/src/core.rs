@@ -126,6 +126,7 @@ impl Core {
     }
 
     async fn commit(&mut self, block: Block) -> ConsensusResult<()> {
+        info!("invoke commit",);
         if self.last_committed_round >= block.round {
             return Ok(());
         }
@@ -342,7 +343,7 @@ impl Core {
         let (b0, b1, b2) = match self.synchronizer.get_ancestors(block).await? {
             Some(ancestors) => ancestors,
             None => {
-                debug!("Processing of {} suspended: missing parent", block.digest());
+                info!("Processing of {} suspended: missing parent", block.digest());
                 return Ok(());
             }
         };
@@ -371,7 +372,7 @@ impl Core {
 
         // See if we can vote for this block.
         if let Some(vote) = self.make_vote(block).await {
-            debug!("Created {:?}", vote);
+            info!("Created {:?}", vote);
             let next_leader = self.leader_elector.get_leader(self.round + 1);
             if next_leader == self.name {
                 self.handle_vote(&vote).await?;
@@ -392,6 +393,7 @@ impl Core {
     }
 
     async fn handle_proposal(&mut self, block: &Block) -> ConsensusResult<()> {
+        
         let digest = block.digest();
 
         // Ensure the block proposer is the right leader for the round.
