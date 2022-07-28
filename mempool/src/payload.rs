@@ -4,7 +4,7 @@ use crypto::{PublicKey, SignatureService};
 use tokio::sync::mpsc::{channel, Receiver, Sender};
 use tokio::sync::oneshot;
 use tokio::time::{sleep, Duration};
-
+use log::{debug, error, info, warn};
 struct Runner {
     transactions: Vec<Transaction>,
     size: usize,
