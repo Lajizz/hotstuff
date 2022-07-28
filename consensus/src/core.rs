@@ -201,7 +201,7 @@ impl Core {
 
     #[async_recursion]
     async fn handle_vote(&mut self, vote: &Vote) -> ConsensusResult<()> {
-        debug!("Processing {:?}", vote);
+        info!("Processing {:?}", vote);
         if vote.round < self.round {
             return Ok(());
         }
@@ -211,7 +211,7 @@ impl Core {
 
         // Add the new vote to our aggregator and see if we have a quorum.
         if let Some(qc) = self.aggregator.add_vote(vote.clone())? {
-            debug!("Assembled {:?}", qc);
+            info!("Assembled {:?}", qc);
 
             // Process the QC.
             self.process_qc(&qc).await;
@@ -241,6 +241,7 @@ impl Core {
             debug!("Assembled {:?}", tc);
 
             // Try to advance the round.
+            info!("advance round 1",);
             self.advance_round(tc.round).await;
 
             // Broadcast the TC.
@@ -324,13 +325,14 @@ impl Core {
     }
 
     async fn process_qc(&mut self, qc: &QC) {
+        info!("advance round 2",);
         self.advance_round(qc.round).await;
         self.update_high_qc(qc);
     }
 
     #[async_recursion]
     async fn process_block(&mut self, block: &Block) -> ConsensusResult<()> {
-        debug!("Processing {:?}", block);
+        info!("Processing {:?}", block);
 
         // Let's see if we have the last three ancestors of the block, that is:
         //      b0 <- |qc0; b1| <- |qc1; block|
@@ -385,6 +387,7 @@ impl Core {
                 .await?;
             }
         }
+        info!("end processing {:?}", block);
         Ok(())
     }
 
@@ -405,10 +408,12 @@ impl Core {
         block.verify(&self.committee)?;
 
         // Process the QC. This may allow us to advance round.
+        info!("advance round 3",);
         self.process_qc(&block.qc).await;
 
         // Process the TC (if any). This may also allow us to advance round.
         if let Some(ref tc) = block.tc {
+            info!("advance round 4",);
             self.advance_round(tc.round).await;
         }
 
@@ -444,6 +449,7 @@ impl Core {
     }
 
     async fn handle_tc(&mut self, tc: TC) -> ConsensusResult<()> {
+        info!("advance round 5",);
         self.advance_round(tc.round).await;
         if self.name == self.leader_elector.get_leader(self.round) {
             self.generate_proposal(Some(tc)).await?;
