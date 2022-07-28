@@ -130,7 +130,7 @@ impl Core {
         if self.last_committed_round >= block.round {
             return Ok(());
         }
-
+        info!("Committed 1");
         let mut to_commit = VecDeque::new();
         to_commit.push_back(block.clone());
 
@@ -145,7 +145,7 @@ impl Core {
             to_commit.push_front(ancestor.clone());
             parent = ancestor;
         }
-
+        info!("Committed 2");
         // Save the last committed block.
         self.last_committed_round = block.round;
 
@@ -160,7 +160,7 @@ impl Core {
                     info!("Committed B{}({})", block.round, base64::encode(x));
                 }
             }
-            debug!("Committed {:?}", block);
+            info!("Committed {:?}", block);
             if let Err(e) = self.commit_channel.send(block).await {
                 warn!("Failed to send block through the commit channel: {}", e);
             }
