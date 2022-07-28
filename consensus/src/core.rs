@@ -270,7 +270,7 @@ impl Core {
         // Reset the timer and advance round.
         self.timer.reset();
         self.round = round + 1;
-        debug!("Moved to round {}", self.round);
+        info!("Moved to round {}", self.round);
 
         // Cleanup the vote aggregator.
         self.aggregator.cleanup(&self.round);
