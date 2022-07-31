@@ -37,8 +37,10 @@ class Committee:
 
     def _build_consensus(self):
         node = {}
+        id = 0
         for a, n in zip(self.consensus, self.names):
-            node[n] = {'name': n, 'stake': 1, 'address': a}
+            node[n] = {'name': n, 'stake': 1, 'address': a, 'id':id}
+            id += 1
         return {'authorities': node, 'epoch': 1}
 
     def _build_mempool(self):

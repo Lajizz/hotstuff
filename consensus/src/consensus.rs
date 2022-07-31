@@ -20,6 +20,7 @@ pub struct Consensus;
 impl Consensus {
     #[allow(clippy::too_many_arguments)]
     pub async fn run(
+        id: u64,
         name: PublicKey,
         committee: Committee,
         parameters: Parameters,
@@ -84,6 +85,7 @@ impl Consensus {
         .await;
 
         let mut core = Core::new(
+            id,
             name,
             committee,
             parameters,

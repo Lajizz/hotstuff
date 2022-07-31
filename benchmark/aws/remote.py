@@ -154,6 +154,7 @@ class Bench:
             keys += [Key.from_file(filename)]
 
         names = [x.name for x in keys]
+        ids = range(len(hosts))
         consensus_addr = [f'{x}:{self.settings.consensus_port}' for x in hosts]
         front_addr = [f'{x}:{self.settings.front_port}' for x in hosts]
         mempool_addr = [f'{x}:{self.settings.mempool_port}' for x in hosts]

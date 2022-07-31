@@ -35,6 +35,7 @@ pub enum ConsensusMessage {
 }
 
 pub struct Core {
+    id:u64,
     name: PublicKey,
     committee: Committee,
     parameters: Parameters,
@@ -58,6 +59,7 @@ pub struct Core {
 impl Core {
     #[allow(clippy::too_many_arguments)]
     pub fn new(
+        id:u64,
         name: PublicKey,
         committee: Committee,
         parameters: Parameters,
@@ -73,6 +75,7 @@ impl Core {
         let aggregator = Aggregator::new(committee.clone());
         let timer = Timer::new(parameters.timeout_delay);
         Self {
+            id,
             name,
             committee,
             parameters,

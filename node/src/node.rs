@@ -32,6 +32,7 @@ pub struct Node {
 
 impl Node {
     pub async fn new(
+        id: u64,
         committee_file: &str,
         key_file: &str,
         store_path: &str,
@@ -72,6 +73,7 @@ impl Node {
 
         // Run the consensus core.
         Consensus::run(
+            id,
             name,
             committee.consensus,
             parameters.consensus,
