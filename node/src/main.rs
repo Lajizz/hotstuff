@@ -142,7 +142,7 @@ fn deploy_testbed(nodes: usize) -> Result<Vec<JoinHandle<()>>, Box<dyn std::erro
             let _ = fs::remove_dir_all(&store_path);
 
             Ok(tokio::spawn(async move {
-                match Node::new(i as u64, committee_file, &key_file, &store_path, None).await {
+                match Node::new(0, committee_file, &key_file, &store_path, None).await {
                     Ok(mut node) => {
                         // Sink the commit channel.
                         while node.commit.recv().await.is_some() {}
