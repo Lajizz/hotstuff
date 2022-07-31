@@ -119,7 +119,7 @@ impl Client {
 
         // NOTE: This log entry is used to compute performance.
         info!("Start sending transactions");
-        sleep(Duration::from_millis(225*self.id)).await;
+        // sleep(Duration::from_millis(225*self.id)).await;
         'main: loop {
             interval.as_mut().tick().await;
             let now = Instant::now();
