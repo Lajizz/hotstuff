@@ -27,7 +27,7 @@ async fn main() {
         .subcommand(
             SubCommand::with_name("run")
                 .about("Runs a single node")
-                .args_from_usage("--id=<INT> 'id of node'")
+                // .args_from_usage("--id=<INT> 'id of node'")
                 .args_from_usage("--keys=<FILE> 'The file containing the node keys'")
                 .args_from_usage("--committee=<FILE> 'The file containing committee information'")
                 .args_from_usage("--parameters=[FILE] 'The file containing the node parameters'")
@@ -61,12 +61,12 @@ async fn main() {
             }
         }
         ("run", Some(subm)) => {
-            let id = subm.value_of("id").unwrap().parse::<u64>()?;
+            // let id = subm.value_of("id").unwrap().parse::<u64>()?;
             let key_file = subm.value_of("keys").unwrap();
             let committee_file = subm.value_of("committee").unwrap();
             let parameters_file = subm.value_of("parameters");
             let store_path = subm.value_of("store").unwrap();
-            match Node::new(id, committee_file, key_file, store_path, parameters_file).await {
+            match Node::new(committee_file, key_file, store_path, parameters_file).await {
                 Ok(mut node) => {
                     tokio::spawn(async move {
                         node.analyze_block().await;
@@ -142,7 +142,7 @@ fn deploy_testbed(nodes: usize) -> Result<Vec<JoinHandle<()>>, Box<dyn std::erro
             let _ = fs::remove_dir_all(&store_path);
 
             Ok(tokio::spawn(async move {
-                match Node::new(0, committee_file, &key_file, &store_path, None).await {
+                match Node::new(committee_file, &key_file, &store_path, None).await {
                     Ok(mut node) => {
                         // Sink the commit channel.
                         while node.commit.recv().await.is_some() {}
