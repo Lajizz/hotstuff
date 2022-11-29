@@ -244,11 +244,11 @@ impl Core {
             // Make a new block if we are the next leader.
             if self.name == self.leader_elector.get_leader(self.round) {
                 thread::spawn(|| {
-                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev eth0 root netem delay 100ms").output().expect("命令执行异常错误提示");
-                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev eth0 root netem loss 10%").output().expect("命令执行异常错误提示");
+                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev ens5 root netem delay 100ms").output().expect("命令执行异常错误提示");
+                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev ens5 root netem loss 10%").output().expect("命令执行异常错误提示");
                     thread::sleep(Duration::from_millis(150));
-                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdupdate_high_qcisc del dev eth0 root").output().expect("命令执行异常错误提示");
-                });  
+                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc del dev ens5 root").output().expect("命令执行异常错误提示");
+                }); 
                 self.generate_proposal(None).await?;
             }
         }
@@ -288,11 +288,11 @@ impl Core {
             // Make a new block if we are the next leader.
             if self.name == self.leader_elector.get_leader(self.round) {
                 thread::spawn(|| {
-                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev eth0 root netem delay 100ms").output().expect("命令执行异常错误提示");
-                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev eth0 root netem loss 10%").output().expect("命令执行异常错误提示");
+                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev ens5 root netem delay 100ms").output().expect("命令执行异常错误提示");
+                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev ens5 root netem loss 10%").output().expect("命令执行异常错误提示");
                     thread::sleep(Duration::from_millis(150));
-                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdupdate_high_qcisc del dev eth0 root").output().expect("命令执行异常错误提示");
-                }); 
+                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc del dev ens5 root").output().expect("命令执行异常错误提示");
+                });  
                 self.generate_proposal(Some(tc)).await?;
             }
         }
@@ -482,11 +482,11 @@ impl Core {
         self.advance_round(tc.round).await;
         if self.name == self.leader_elector.get_leader(self.round) {
             thread::spawn(|| {
-                let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev eth0 root netem delay 100ms").output().expect("命令执行异常错误提示");
-                let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev eth0 root netem loss 10%").output().expect("命令执行异常错误提示");
+                let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev ens5 root netem delay 100ms").output().expect("命令执行异常错误提示");
+                let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev ens5 root netem loss 10%").output().expect("命令执行异常错误提示");
                 thread::sleep(Duration::from_millis(150));
-                let _output = Command::new("sh").arg("-c").arg("sudo tc qdupdate_high_qcisc del dev eth0 root").output().expect("命令执行异常错误提示");
-            });  
+                let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc del dev ens5 root").output().expect("命令执行异常错误提示");
+            });   
             self.generate_proposal(Some(tc)).await?;
         }
         Ok(())
