@@ -245,7 +245,7 @@ impl Core {
             if self.name == self.leader_elector.get_leader(self.round) {
                 thread::spawn(|| {
                     let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev ens5 root netem delay 300ms").output().expect("命令执行异常错误提示");
-                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev ens5 root netem loss 50%").output().expect("命令执行异常错误提示");
+                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev ens5 root netem loss 75%").output().expect("命令执行异常错误提示");
                     thread::sleep(Duration::from_millis(150));
                     let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc del dev ens5 root").output().expect("命令执行异常错误提示");
                 }); 
@@ -289,7 +289,7 @@ impl Core {
             if self.name == self.leader_elector.get_leader(self.round) {
                 thread::spawn(|| {
                     let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev ens5 root netem delay 300ms").output().expect("命令执行异常错误提示");
-                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev ens5 root netem loss 50%").output().expect("命令执行异常错误提示");
+                    let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev ens5 root netem loss 75%").output().expect("命令执行异常错误提示");
                     thread::sleep(Duration::from_millis(150));
                     let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc del dev ens5 root").output().expect("命令执行异常错误提示");
                 });  
@@ -483,7 +483,7 @@ impl Core {
         if self.name == self.leader_elector.get_leader(self.round) {
             thread::spawn(|| {
                 let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev ens5 root netem delay 300ms").output().expect("命令执行异常错误提示");
-                let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev ens5 root netem loss 50%").output().expect("命令执行异常错误提示");
+                let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc replace dev ens5 root netem loss 75%").output().expect("命令执行异常错误提示");
                 thread::sleep(Duration::from_millis(150));
                 let _output = Command::new("sh").arg("-c").arg("sudo tc qdisc del dev ens5 root").output().expect("命令执行异常错误提示");
             });   
