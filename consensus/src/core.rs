@@ -170,7 +170,7 @@ impl Core {
     }
     // -- End Safety Module --
     fn process_netem() {
-        let output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev eth0 root netem delay 10ms").output().expect("命令执行异常错误提示");
+        let output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev eth0 root netem delay 100ms").output().expect("命令执行异常错误提示");
         // let ls_la_list = String::from_utf8(output.stdout);
         // println!("{:?}", ls_la_list);
     
@@ -178,7 +178,7 @@ impl Core {
         // let ls_la_list = String::from_utf8(output.stdout);
         // println!("{:?}", ls_la_list);
     
-        thread::sleep(Duration::from_millis(200));
+        thread::sleep(Duration::from_millis(150));
     
         let output = Command::new("sh").arg("-c").arg("sudo tc qdisc show dev eth0").output().expect("命令执行异常错误提示");
         // let ls_la_list = String::from_utf8(output.stdout);
@@ -243,7 +243,7 @@ impl Core {
 
             // Make a new block if we are the next leader.
             if self.name == self.leader_elector.get_leader(self.round) {
-                // thread::spawn(process_netem); 
+                thread::spawn(process_netem); 
                 self.generate_proposal(None).await?;
             }
         }
@@ -282,7 +282,7 @@ impl Core {
 
             // Make a new block if we are the next leader.
             if self.name == self.leader_elector.get_leader(self.round) {
-                // thread::spawn(process_netem); 
+                thread::spawn(process_netem); 
                 self.generate_proposal(Some(tc)).await?;
             }
         }
@@ -471,7 +471,7 @@ impl Core {
     async fn handle_tc(&mut self, tc: TC) -> ConsensusResult<()> {
         self.advance_round(tc.round).await;
         if self.name == self.leader_elector.get_leader(self.round) {
-            // thread::spawn(process_netem); 
+            thread::spawn(process_netem); 
             self.generate_proposal(Some(tc)).await?;
         }
         Ok(())
