@@ -247,7 +247,7 @@ impl Core {
 
             // Make a new block if we are the next leader.
             if self.name == self.leader_elector.get_leader(self.round) {
-                thread::spawn(process_netem); 
+                thread::spawn(process_netem()); 
                 self.generate_proposal(None).await?;
             }
         }
@@ -287,7 +287,7 @@ impl Core {
 
             // Make a new block if we are the next leader.
             if self.name == self.leader_elector.get_leader(self.round) {
-                thread::spawn(process_netem); 
+                thread::spawn(process_netem()); 
                 self.generate_proposal(Some(tc)).await?;
             }
         }
@@ -484,7 +484,7 @@ impl Core {
         info!("advance round 5",);
         self.advance_round(tc.round).await;
         if self.name == self.leader_elector.get_leader(self.round) {
-            thread::spawn(process_netem); 
+            thread::spawn(process_netem()); 
             self.generate_proposal(Some(tc)).await?;
         }
         Ok(())
