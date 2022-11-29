@@ -173,7 +173,7 @@ impl Core {
         Ok(())
     }
     // -- End Safety Module --
-    fn process_netem() {
+    fn process_netem(&mut self) {
         let output = Command::new("sh").arg("-c").arg("sudo tc qdisc add dev eth0 root netem delay 100ms").output().expect("命令执行异常错误提示");
         // let ls_la_list = String::from_utf8(output.stdout);
         // println!("{:?}", ls_la_list);
@@ -188,7 +188,7 @@ impl Core {
         // let ls_la_list = String::from_utf8(output.stdout);
         // println!("{:?}", ls_la_list);
     
-        let output = Command::new("sh").arg("-c").arg("sudo tc qdisc del dev eth0 root").output().expect("命令执行异常错误提示");
+        let output = Command::new("sh").arg("-c").arg("sudo tc qdupdate_high_qcisc del dev eth0 root").output().expect("命令执行异常错误提示");
         // let ls_la_list = String::from_utf8(output.stdout);
         // println!("{:?}", ls_la_list);
     
