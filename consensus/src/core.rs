@@ -17,8 +17,8 @@ use std::collections::VecDeque;
 use store::Store;
 use tokio::sync::mpsc::{Receiver, Sender};
 use tokio::time::{sleep, Duration};
-use std::process::Command;
-use std::{thread, time::Duration};
+// use std::process::Command;
+// use std::{thread};
 
 #[cfg(test)]
 #[path = "tests/core_tests.rs"]
