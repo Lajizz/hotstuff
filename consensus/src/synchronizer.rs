@@ -135,12 +135,12 @@ impl Synchronizer {
         let parent = block.parent();
         match self.store.read(parent.to_vec()).await? {
             Some(bytes) => Ok(Some(bincode::deserialize(&bytes)?)),
-            // None => {
-            //     if let Err(e) = self.inner_channel.send(block.clone()).await {
-            //         panic!("Failed to send request to synchronizer: {}", e);
-            //     }
-            //     Ok(None)
-            // }
+            None => {
+                // if let Err(e) = self.inner_channel.send(block.clone()).await {
+                //     panic!("Failed to send request to synchronizer: {}", e);
+                // }
+                Ok(None)
+            }
         }
     }
 
