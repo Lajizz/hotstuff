@@ -45,54 +45,54 @@ impl Synchronizer {
 
             let timer = sleep(Duration::from_millis(TIMER_ACCURACY));
             tokio::pin!(timer);
-            loop {
-                tokio::select! {
-                    Some(block) = rx_inner.recv() => {
-                        // if pending.insert(block.digest()) {
-                        //     let parent = block.parent().clone();
-                        //     let fut = Self::waiter(store_copy.clone(), parent.clone(), block);
-                        //     waiting.push(fut);
+            // loop {
+            //     tokio::select! {
+            //         Some(block) = rx_inner.recv() => {
+            //             // if pending.insert(block.digest()) {
+            //             //     let parent = block.parent().clone();
+            //             //     let fut = Self::waiter(store_copy.clone(), parent.clone(), block);
+            //             //     waiting.push(fut);
 
-                        //     if !requests.contains_key(&parent){
-                        //         debug!("Requesting sync for block {}", parent);
-                        //         let now = SystemTime::now()
-                        //             .duration_since(UNIX_EPOCH)
-                        //             .expect("Failed to measure time")
-                        //             .as_millis();
-                        //         requests.insert(parent.clone(), now);
-                        //         let message = ConsensusMessage::SyncRequest(parent, name);
-                        //         Self::transmit(&message, &name, None, &network_channel, &committee).await.unwrap();
-                        //     }
-                        // }
-                    },
-                    Some(result) = waiting.next() => match result {
-                        // Ok(block) => {
-                        //     let _ = pending.remove(&block.digest());
-                        //     let _ = requests.remove(&block.parent());
-                        //     let message = ConsensusMessage::LoopBack(block);
-                        //     if let Err(e) = core_channel.send(message).await {
-                        //         panic!("Failed to send message through core channel: {}", e);
-                        //     }
-                        // },
-                        // Err(e) => error!("{}", e)
-                    },
-                    () = &mut timer => {
-                        // This implements the 'perfect point to point link' abstraction.
-                        // for (digest, timestamp) in &requests {
-                        //     let now = SystemTime::now()
-                        //         .duration_since(UNIX_EPOCH)
-                        //         .expect("Failed to measure time")
-                        //         .as_millis();
-                        //     if timestamp + (sync_retry_delay as u128) < now {
-                        //         debug!("Requesting sync for block {} (retry)", digest);
-                        //         let message = ConsensusMessage::SyncRequest(digest.clone(), name);
-                        //         Self::transmit(&message, &name, None, &network_channel, &committee).await.unwrap();
-                        //     }
-                        // }
-                        timer.as_mut().reset(Instant::now() + Duration::from_millis(TIMER_ACCURACY));
-                    },
-                    else => break,
-                }
+            //             //     if !requests.contains_key(&parent){
+            //             //         debug!("Requesting sync for block {}", parent);
+            //             //         let now = SystemTime::now()
+            //             //             .duration_since(UNIX_EPOCH)
+            //             //             .expect("Failed to measure time")
+            //             //             .as_millis();
+            //             //         requests.insert(parent.clone(), now);
+            //             //         let message = ConsensusMessage::SyncRequest(parent, name);
+            //             //         Self::transmit(&message, &name, None, &network_channel, &committee).await.unwrap();
+            //             //     }
+            //             // }
+            //         },
+            //         Some(result) = waiting.next() => match result {
+            //             // Ok(block) => {
+            //             //     let _ = pending.remove(&block.digest());
+            //             //     let _ = requests.remove(&block.parent());
+            //             //     let message = ConsensusMessage::LoopBack(block);
+            //             //     if let Err(e) = core_channel.send(message).await {
+            //             //         panic!("Failed to send message through core channel: {}", e);
+            //             //     }
+            //             // },
+            //             // Err(e) => error!("{}", e)
+            //         },
+            //         () = &mut timer => {
+            //             // This implements the 'perfect point to point link' abstraction.
+            //             // for (digest, timestamp) in &requests {
+            //             //     let now = SystemTime::now()
+            //             //         .duration_since(UNIX_EPOCH)
+            //             //         .expect("Failed to measure time")
+            //             //         .as_millis();
+            //             //     if timestamp + (sync_retry_delay as u128) < now {
+            //             //         debug!("Requesting sync for block {} (retry)", digest);
+            //             //         let message = ConsensusMessage::SyncRequest(digest.clone(), name);
+            //             //         Self::transmit(&message, &name, None, &network_channel, &committee).await.unwrap();
+            //             //     }
+            //             // }
+            //             timer.as_mut().reset(Instant::now() + Duration::from_millis(TIMER_ACCURACY));
+            //         },
+            //         else => break,
+            //     }
             }
         });
         Self {
