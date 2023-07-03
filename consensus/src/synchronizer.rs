@@ -39,9 +39,9 @@ impl Synchronizer {
 
         let store_copy = store.clone();
         tokio::spawn(async move {
-            let mut waiting = FuturesUnordered::new();
-            let mut pending = HashSet::new();
-            let mut requests = HashMap::new();
+            // let mut waiting = FuturesUnordered::new();
+            // let mut pending = HashSet::new();
+            // let mut requests = HashMap::new();
 
             let timer = sleep(Duration::from_millis(TIMER_ACCURACY));
             tokio::pin!(timer);
