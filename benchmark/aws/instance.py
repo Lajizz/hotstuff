@@ -127,6 +127,19 @@ class InstanceManager:
                         'Description': 'Front end to accept clients transactions',
                     }],
                 },
+                {
+                    'IpProtocol': 'tcp',
+                    'FromPort': 9000,
+                    'ToPort': 9000,
+                    'IpRanges': [{
+                        'CidrIp': '0.0.0.0/0',
+                        'Description': 'rpc',
+                    }],
+                    'Ipv6Ranges': [{
+                        'CidrIpv6': '::/0',
+                        'Description': 'rpc',
+                    }],
+                },
             ]
         )
 
@@ -135,7 +148,7 @@ class InstanceManager:
         response = client.describe_images(
             Filters=[{
                 'Name': 'description',
-                'Values': ['Canonical, Ubuntu, 20.04 LTS, amd64 focal image build on 2020-10-26']
+                'Values': ['Canonical, Ubuntu, 20.04 LTS, amd64 focal image build on 2022-10-18']
             }]
         )
         return response['Images'][0]['ImageId']

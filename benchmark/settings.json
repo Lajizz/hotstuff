@@ -1,7 +1,7 @@
 {
     "key": {
-        "name": "aws",
-        "path": "/absolute/key/path"
+        "name": "Main",
+        "path": "/home/ubuntu/.ssh/aws"
     },
     "ports": {
         "consensus": 8000,
@@ -10,11 +10,11 @@
     },
     "repo": {
         "name": "hotstuff",
-        "url": "https://github.com/asonnino/hotstuff.git",
-        "branch": "3-chain"
+        "url": "https://github.com/Waynezee/hotstuff",
+        "branch": "ycsb_test"
     },
     "instances": {
-        "type": "m5d.8xlarge",
-        "regions": ["us-east-1", "eu-north-1", "ap-southeast-2", "us-west-1", "ap-northeast-1"]
+        "type": "t3.2xlarge",
+        "regions": ["us-east-2","ap-southeast-1","ap-northeast-1","eu-central-1"]
     }
 }
