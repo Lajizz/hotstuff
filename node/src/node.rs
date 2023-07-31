@@ -2,11 +2,12 @@ use crate::config::Export as _;
 use crate::config::{Committee, Parameters, Secret};
 use consensus::{Block, Consensus, ConsensusError};
 use crypto::SignatureService;
-use log::info;
-use mempool::{Mempool, MempoolError};
+use log::{info,error};
+use mempool::{Mempool, MempoolError, Payload};
 use store::{Store, StoreError};
 use thiserror::Error;
 use tokio::sync::mpsc::{channel, Receiver};
+use libycsb::GClient;
 
 #[derive(Error, Debug)]
 pub enum NodeError {
@@ -28,6 +29,7 @@ pub enum NodeError {
 
 pub struct Node {
     pub commit: Receiver<Block>,
+    pub store: Store
 }
 
 impl Node {
@@ -85,7 +87,7 @@ impl Node {
         .await?;
 
         info!("Node {} successfully booted", name);
-        Ok(Self { commit: rx_commit })
+        Ok(Self { commit: rx_commit, store: store})
     }
 
     pub fn print_key_file(filename: &str) -> Result<(), NodeError> {
@@ -93,8 +95,26 @@ impl Node {
     }
 
     pub async fn analyze_block(&mut self) {
-        while let Some(_block) = self.commit.recv().await {
+        let mut gclient = GClient::new();
+        while let Some(block) = self.commit.recv().await {
             // This is where we can further process committed block.
+            for digest in &block.payload {
+                match self.store.read(digest.to_vec()).await {
+                    Ok(Some(data)) => {
+
+                        let payload:Payload = bincode::deserialize(&data).unwrap();
+                        
+                        info!("execute print {}", data.len());
+                        for tx in payload.transactions {
+                            let response = gclient.execute_cmds(tx).await;
+                            info!("response {:?}", response);
+                        }
+                    }
+                    Ok(None) => (),
+                    Err(e) => error!("{}", e),
+                }
+                info!("Execute B{}({})", block.round, base64::encode(digest))
+            }
         }
     }
 }

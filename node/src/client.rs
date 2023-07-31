@@ -11,6 +11,7 @@ use std::net::SocketAddr;
 use tokio::net::TcpStream;
 use tokio::time::{interval, sleep, Duration, Instant};
 use tokio_util::codec::{Framed, LengthDelimitedCodec};
+use libycsb::GClient;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -104,7 +105,7 @@ impl Client {
         let burst = self.rate / PRECISION;
         let mut tx = BytesMut::with_capacity(self.size);
         let mut counter = 0;
-        let mut r = rand::thread_rng().gen();
+        // let mut r = rand::thread_rng().gen();
         let mut transport = Framed::new(stream, LengthDelimitedCodec::new());
         let interval = interval(Duration::from_millis(BURST_DURATION));
         tokio::pin!(interval);
@@ -112,33 +113,27 @@ impl Client {
         // NOTE: This log entry is used to compute performance.
         info!("Start sending transactions");
 
+        let mut gclient = GClient::new();
+        let mut rng = rand::thread_rng();
+        let uinque_id = rng.gen_range(0, 100000);
         'main: loop {
             interval.as_mut().tick().await;
             let now = Instant::now();
-
-            for x in 0..burst {
-                let bytes = if x == counter % burst {
-                    // NOTE: This log entry is used to compute performance.
-                    info!("Sending sample transaction {}", counter);
-
-                    tx.put_u8(0u8); // Sample txs start with 0.
-                    tx.put_u64(counter); // This counter identifies the tx.
-                    tx.resize(self.size, 0u8);
-                    tx.split().freeze()
-                } else {
-                    r += 1;
-
-                    tx.put_u8(1u8); // Standard txs start with 1.
-                    tx.put_u64(r); // Ensures all clients send different txs.
-                    tx.resize(self.size, 0u8);
-                    tx.split().freeze()
-                };
-
-                if let Err(e) = transport.send(bytes).await {
-                    warn!("Failed to send transaction: {}", e);
-                    break 'main;
-                }
+            // NOTE: This log entry is used to compute performance.
+            let response = gclient.generate_cmds(uinque_id).await;
+            info!("Sending sample transaction {}", counter);
+            tx.put_u8(0u8); // Sample txs start with 0.
+            tx.put_u64(counter); // This counter identifies the tx.
+            tx.put_slice(&response);
+        
+            // tx.resize(self.size, 0u8);
+            let bytes = tx.split().freeze();
+            // info!("Sending sample transaction {:?}", bytes.to_vec());
+            if let Err(e) = transport.send(bytes).await {
+                warn!("Failed to send transaction: {}", e);
+                break 'main;
             }
+              
             if now.elapsed().as_millis() > BURST_DURATION as u128 {
                 // NOTE: This log entry is used to compute performance.
                 warn!("Transaction rate too high for this client");
